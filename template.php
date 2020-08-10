@@ -1,0 +1,29 @@
+<div style="border: 0px; font-family: Verdana, Geneva, &quot;DejaVu Sans&quot;, sans-serif; font-size: 16px; margin: 0px 17px 20px; outline: 0px; padding: 0px; vertical-align: baseline; display: inline-block; max-width: 100%; text-align: center; color: rgb(0, 0, 0);">
+<ul style="border: 0px; font-family: inherit; font-style: inherit; font-weight: inherit; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; outline: 0px; padding: 0px; vertical-align: baseline; list-style: none;">
+<li style="border: 0px; font-family: inherit; font-size: 13px; font-style: inherit; font-weight: inherit; margin: 0px; outline: 0px; padding: 0px; vertical-align: baseline; display: inline-block; height: 100px; position: relative; width: 70px; border-radius: 3px 0px 0px 3px; background-color: rgb(255, 0, 0);">
+<a href="https://www.colorhexa.com/ff0000" style="border: 0px; font-family: inherit; font-style: inherit; margin: 0px; outline: 0px; padding: 0px; vertical-align: baseline; color: rgb(255, 255, 255); text-shadow: rgba(0, 0, 0, 0.2) 0px 1px 0px; display: block; height: 100px; line-height: 100px; opacity: 0; position: relative; z-index: 2; width: 70px;">
+#ff0000</a>
+<pre style="border: 0px; font-family: Consolas, menlo, monaco, monospace; font-size: 13px; font-style: inherit; font-weight: inherit; margin-bottom: 0px; margin-left: -75px; outline: 0px; padding: 6px 10px; vertical-align: baseline; color: rgb(119, 119, 119); width: 150px; background: none 0px 0px repeat scroll rgb(251, 251, 251); box-shadow: rgba(180, 180, 180, 0.1) 0px 0px 0px 6px, rgba(0, 0, 0, 0.2) 0px 1px 2px; border-radius: 3px; display: inline-block; left: 35px; line-height: 18px; list-style: inside none disc; opacity: 0; position: absolute; text-align: left; top: -42px; visibility: hidden; white-space: nowrap; z-index: 10; transition: all 0.2s linear 0s;">
+<code style="border-width: 0px 0px 0px 5px; border-top-style: initial; border-right-style: initial; border-bottom-style: initial; border-left-style: solid; border-top-color: initial; border-right-color: initial; border-bottom-color: initial; border-left-color: rgb(228, 229, 231); border-image: initial; font-family: Consolas, menlo, monaco, monospace; font-size: 12px; font-style: inherit; font-weight: inherit; margin: 0px; outline: 0px; padding: 2px 4px; vertical-align: baseline; background: rgb(247, 248, 250); display: block; overflow: hidden; text-overflow: ellipsis;">
+</code>
+<code style="border-width: 0px 0px 0px 5px; border-top-style: initial; border-right-style: initial; border-bottom-style: initial; border-left-style: solid; border-top-color: initial; border-right-color: initial; border-bottom-color: initial; border-left-color: rgb(228, 229, 231); border-image: initial; font-family: Consolas, menlo, monaco, monospace; font-size: 12px; font-style: inherit; font-weight: inherit; margin: 0px; outline: 0px; padding: 2px 4px; vertical-align: baseline; background: rgb(247, 248, 250); display: block; overflow: hidden; text-overflow: ellipsis;">
+</code>
+</pre>
+</li>
+<li style="border: 0px; font-family: inherit; font-size: 13px; font-style: inherit; font-weight: inherit; margin: 0px; outline: 0px; padding: 0px; vertical-align: baseline; display: inline-block; height: 100px; position: relative; width: 70px; border-radius: 0px 3px 3px 0px; background-color: rgb(0, 255, 255);">
+<a href="https://www.colorhexa.com/00ffff" style="border: 0px; font-family: inherit; font-style: inherit; margin: 0px; outline: 0px; padding: 0px; vertical-align: baseline; color: rgb(0, 0, 0); text-shadow: rgba(255, 255, 255, 0.2) 0px 1px 0px; display: block; height: 100px; line-height: 100px; opacity: 0; position: relative; z-index: 2; width: 70px;">
+#00ffff
+</a>
+<pre style="border: 0px; font-family: Consolas, menlo, monaco, monospace; font-size: 13px; font-style: inherit; font-weight: inherit; margin-bottom: 0px; margin-left: -75px; outline: 0px; padding: 6px 10px; vertical-align: baseline; color: rgb(119, 119, 119); width: 150px; background: none 0px 0px repeat scroll rgb(251, 251, 251); box-shadow: rgba(180, 180, 180, 0.1) 0px 0px 0px 6px, rgba(0, 0, 0, 0.2) 0px 1px 2px; border-radius: 3px; display: inline-block; left: 35px; line-height: 18px; list-style: inside none disc; opacity: 0; position: absolute; text-align: left; top: -42px; visibility: hidden; white-space: nowrap; z-index: 10; transition: all 0.2s linear 0s;">
+<code style="border-width: 0px 0px 0px 5px; border-top-style: initial; border-right-style: initial; border-bottom-style: initial; border-left-style: solid; border-top-color: initial; border-right-color: initial; border-bottom-color: initial; border-left-color: rgb(228, 229, 231); border-image: initial; font-family: Consolas, menlo, monaco, monospace; font-size: 12px; font-style: inherit; font-weight: inherit; margin: 0px; outline: 0px; padding: 2px 4px; vertical-align: baseline; background: rgb(247, 248, 250); display: block; overflow: hidden; text-overflow: ellipsis;">
+</code>
+<code style="border-width: 0px 0px 0px 5px; border-top-style: initial; border-right-style: initial; border-bottom-style: initial; border-left-style: solid; border-top-color: initial; border-right-color: initial; border-bottom-color: initial; border-left-color: rgb(228, 229, 231); border-image: initial; font-family: Consolas, menlo, monaco, monospace; font-size: 12px; font-style: inherit; font-weight: inherit; margin: 0px; outline: 0px; padding: 2px 4px; vertical-align: baseline; background: rgb(247, 248, 250); display: block; overflow: hidden; text-overflow: ellipsis;">
+</code>
+</pre>
+</li>
+</ul>
+<span style="clear: both; color: rgb(103, 113, 125); display: block; font-size: 12px; padding-top: 10px; padding-bottom: 5px;">Complementary Color<span style="color: rgb(0, 0, 0); font-size: 16px; text-align: left;">
+&nbsp;
+</span>
+</span>
+</div>
