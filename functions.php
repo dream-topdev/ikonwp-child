@@ -227,6 +227,26 @@ function color_schemes_shortcode(){
     set_query_var( 'title', "Complemetary Color" );
     set_query_var( 'colors', array("#ff0000", "#00ffff"));
     get_template_part( 'partials/color', 'scheme' );
+
+    set_query_var( 'title', "Analogous Color" );
+    set_query_var( 'colors', array("#ff0080", "#ff0000", "#ff8000"));
+    get_template_part( 'partials/color', 'scheme' );
+    
+    set_query_var( 'title', "Split Complementary Color" );
+    set_query_var( 'colors', array("#0080ff", "#ff0000", "#00ff80"));
+    get_template_part( 'partials/color', 'scheme' );
+
+    set_query_var( 'title', "Triadic Color" );
+    set_query_var( 'colors', array("#0000ff", "#ff0000", "#00ff00"));
+    get_template_part( 'partials/color', 'scheme' );    
+
+    set_query_var( 'title', "Tetradic Color" );
+    set_query_var( 'colors', array("#ff00ff", "#ff0000", "#00ff00", "#00ffff"));
+    get_template_part( 'partials/color', 'scheme' );
+
+    set_query_var( 'title', "Monochromatic Color" );
+    set_query_var( 'colors', array("#b30000", "#cc0000", "#e60000", "#ff0000", "#ff1a1a", "#ff3333", "#ff4d4d" ));
+    get_template_part( 'partials/color', 'scheme' );
 }
 add_shortcode('color-scheme', 'color_schemes_shortcode');
 ?>
