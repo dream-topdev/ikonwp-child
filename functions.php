@@ -48,7 +48,7 @@ add_action( 'wp_head', 'gretathemes_meta_description');
 
 // Function to add color title text to posts and pages
 function color_title_shortcode() {
-    $colorName = 'Red';
+    $colorName = 'Color name';
     $colorHex = getHexFromArg();
     return $colorName . ' / #' . $colorHex  . ' hex color';
 }
@@ -69,7 +69,42 @@ function RGBtoHSV($r,$g,$b) {
     elseif($b==$minRGB)$h=1-(($r-$g)/$chroma); else $h=5-(($b-$r)/$chroma);
     return array('h'=>60*$h,'s'=>$chroma/$maxRGB,'v'=>$maxRGB);
 } 
+function HSVtoRGB($H, $S, $V) {
+    //H, S and V input range = 0 ÷ 1.0
+    //R, G and B output range = 0 ÷ 255
 
+    if ( $S == 0 )
+    {
+        $R = $V * 255;
+        $G = $V * 255;
+        $B = $V * 255;
+    }
+    else
+    {
+        $var_h = $H * 6;
+        if ( $var_h == 6 ) $var_h = 0;      //H must be < 1
+        $var_i = floor( $var_h );             //Or ... var_i = floor( var_h )
+        $var_1 = $V * ( 1 - $S );
+        $var_2 = $V * ( 1 - $S * ( $var_h - $var_i ) );
+        $var_3 = $V * ( 1 - $S * ( 1 - ( $var_h - $var_i ) ) );
+
+        if      ( $var_i == 0 ) { $var_r = $V     ; $var_g = $var_3 ; $var_b = $var_1; }
+        else if ( $var_i == 1 ) { $var_r = $var_2 ; $var_g = $V     ; $var_b = $var_1; }
+        else if ( $var_i == 2 ) { $var_r = $var_1 ; $var_g = $V     ; $var_b = $var_3; }
+        else if ( $var_i == 3 ) { $var_r = $var_1 ; $var_g = $var_2 ; $var_b = $V;     }
+        else if ( $var_i == 4 ) { $var_r = $var_3 ; $var_g = $var_1 ; $var_b = $V;     }
+        else                   { $var_r = $V     ; $var_g = $var_1 ; $var_b = $var_2; }
+
+        $R = $var_r * 255;
+        $G = $var_g * 255;
+        $B = $var_b * 255;
+    }
+    return array(
+        'R' => $R,
+        'G' => $G,
+        'B' => $B
+    );
+}
 function RGBtoXYZ($sR, $sG, $sB) {
     //sR, sG and sB (Standard RGB) input range = 0 ÷ 255
     //X, Y and Z output refer to a D65/2° standard illuminant.
@@ -259,6 +294,30 @@ function XYZtoHunter($X, $Y, $Z) {
         'B' => $B
     );
 }
+function RGBtoAnalog($x1, $y1, $z1) {
+    $a1 = 254; $b1 = 186; $c1 = 243;
+    $a2 = 170; $b2 = 33; $c2 = 172;
+    $a3 = 32; $b3 = 53; $c3 = 58;
+
+    $x2 = ($a2 / $a1) * $x1;
+    $y2 = ($b2 / $b1) * $y1;
+    $z2 = ($c2 / $c1) * $z1;
+    $x3 = ($a3 / $a2) * $x2;
+    $y3 = ($b3 / $b2) * $y2;
+    $z3 = ($c3 / $c2) * $z2;
+    return array(
+        array(
+            'R' => floor($x2),
+            'G' => floor($y2),
+            'B' => floor($z2)
+        ),
+        array(
+            'R' => floor($x3),
+            'G' => floor($y3),
+            'B' => floor($z3)
+        )
+    );
+}
 function getHexFromArg() {
     $colorHex = 'ff0000';
     if (get_query_var("color_hex"))
@@ -394,11 +453,11 @@ function color_value_shortcode($atts) {
         case 'XYZ': // XYZ                     
             switch($prop) {
                 case 'X':
-                    return $cXYZ['X'];
+                    return number_format($cXYZ['X'], 3);
                 case 'Y':
-                    return $cXYZ['Y'];
+                    return number_format($cXYZ['Y'], 3);
                 case 'Z':
-                    return $cXYZ['Z'];
+                    return number_format($cXYZ['Z'], 3);
                 default:
                     return 0;
             }
@@ -483,14 +542,24 @@ function color_inverse($color){
 }
 // Function to add color schemes to posts and pages
 function color_schemes_shortcode(){
-    
+    include_once('csscolor.php');
     $colorHex = getHexFromArg();
+    $cInfo = array(
+        'r' => hexdec(substr($colorHex, 0, 2)),
+        'g' => hexdec(substr($colorHex, 2, 2)),
+        'b' => hexdec(substr($colorHex, 4, 2)),
+    );
+    $analog = RGBtoAnalog($cInfo['r'], $cInfo['g'], $cInfo['b']);
+    $cHSV = RGBtoHSV($cInfo['r'], $cInfo['g'], $cInfo['b']);
+    $start = sprintf("rgb(%d,%d,%d)", $analog[0]['R'], $analog[0]['G'], $analog[0]['B']);
+    $end = sprintf("rgb(%d,%d,%d)", $analog[1]['R'], $analog[1]['G'], $analog[1]['B']);
+    $base = new CSS_Color($colorHex);
     set_query_var( 'title', "Complemetary Color" );
     set_query_var( 'colors', array('#'.$colorHex, color_inverse($colorHex)));
     get_template_part( 'partials/color', 'scheme' );
 
     set_query_var( 'title', "Analogous Color" );
-    set_query_var( 'colors', array("#ff0080", "#ff0000", "#ff8000"));
+    set_query_var( 'colors', array($start, "#".$colorHex, $end));
     get_template_part( 'partials/color', 'scheme' );
     
     set_query_var( 'title', "Split Complementary Color" );
@@ -506,7 +575,7 @@ function color_schemes_shortcode(){
     get_template_part( 'partials/color', 'scheme' );
 
     set_query_var( 'title', "Monochromatic Color" );
-    set_query_var( 'colors', array("#b30000", "#cc0000", "#e60000", "#ff0000", "#ff1a1a", "#ff3333", "#ff4d4d" ));
+    set_query_var( 'colors', array("#".$base->bg['-3'], "#".$base->bg['-2'], "#".$base->bg['-1'], "#".$base->bg['0'], "#".$base->bg['+1'], "#".$base->bg['+2'], "#".$base->bg['+3'] ));
     get_template_part( 'partials/color', 'scheme' );
 }
 add_shortcode('color-scheme', 'color_schemes_shortcode');
