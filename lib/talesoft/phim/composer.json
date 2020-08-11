@@ -1,0 +1,39 @@
+{
+    "name": "talesoft/phim",
+    "type": "library",
+    "keywords": ["image", "color", "hsl", "hsv", "cie", "lab", "ciede2000", "manipulation", "processing", "gd", "imagick"],
+    "description": "An image and color manipulation and processing library for PHP",
+    "license": "MIT",
+    "homepage": "http://phim.talesoft.codes",
+    "authors": [
+        {
+            "name": "Torben Koehn",
+            "email": "torben@talesoft.codes"
+        }
+    ],
+    "support": {
+        "email": "torben@talesoft.codes",
+        "issues": "https://github.com/Talesoft/phim/issues",
+        "source": "https://github.com/Talesoft/phim",
+        "docs": "http://phim.talesoft.codes/docs"
+    },
+    "require": {
+        "php": ">=5.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        },
+        "files": [
+            "src/Phim/functions.php"
+        ]
+    },
+    "suggest": {
+        "gd": "for image processing with GD",
+        "imagick": "for image processing with Imagick",
+        "symfony/mbstring-polyfill": "if youre lacking the mbstring extension or can't install it"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.1"
+    }
+}

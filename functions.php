@@ -1,4 +1,5 @@
 <?php
+include_once('lib/autoload.php');
 add_action( 'wp_enqueue_scripts', 'enqueue_parent_styles' );
 function enqueue_parent_styles() {
    wp_enqueue_style( 'parent-style', get_template_directory_uri().'/style.css' );
@@ -540,6 +541,11 @@ function color_inverse($color){
     }
     return '#'.$rgb;
 }
+
+use Phim\Color\Scheme\AnalogousScheme;
+use Phim\Color\Scheme\SplitComplementaryScheme;
+use Phim\Color\Scheme\TriadicScheme;
+use Phim\Color\Scheme\TetradicScheme;
 // Function to add color schemes to posts and pages
 function color_schemes_shortcode(){
     include_once('csscolor.php');
@@ -558,20 +564,24 @@ function color_schemes_shortcode(){
     set_query_var( 'colors', array('#'.$colorHex, color_inverse($colorHex)));
     get_template_part( 'partials/color', 'scheme' );
 
+    $colors = new AnalogousScheme("#".$colorHex);
     set_query_var( 'title', "Analogous Color" );
-    set_query_var( 'colors', array($start, "#".$colorHex, $end));
-    get_template_part( 'partials/color', 'scheme' );
-    
-    set_query_var( 'title', "Split Complementary Color" );
-    set_query_var( 'colors', array("#0080ff", "#ff0000", "#00ff80"));
+    set_query_var( 'colors', array($colors[0]->toRgb()->__toString(), $colors[1]->toRgb()->__toString(), $colors[2]->toRgb()->__toString()));
     get_template_part( 'partials/color', 'scheme' );
 
+    $colors = new SplitComplementaryScheme("#".$colorHex);
+    set_query_var( 'title', "Split Complementary Color" );
+    set_query_var( 'colors', array($colors[1]->toRgb()->__toString(), $colors[0]->toRgb()->__toString(), $colors[2]->toRgb()->__toString()));
+    get_template_part( 'partials/color', 'scheme' );
+
+    $colors = new TriadicScheme("#".$colorHex);
     set_query_var( 'title', "Triadic Color" );
-    set_query_var( 'colors', array("#0000ff", "#ff0000", "#00ff00"));
+    set_query_var( 'colors', array($colors[1]->toRgb()->__toString(), $colors[0]->toRgb()->__toString(), $colors[2]->toRgb()->__toString()));
     get_template_part( 'partials/color', 'scheme' );    
 
+    $colors = new TetradicScheme("#".$colorHex);
     set_query_var( 'title', "Tetradic Color" );
-    set_query_var( 'colors', array("#ff00ff", "#ff0000", "#00ff00", "#00ffff"));
+    set_query_var( 'colors', array($colors[1]->toRgb()->__toString(), $colors[0]->toRgb()->__toString(), $colors[2]->toRgb()->__toString(), $colors[3]->toRgb()->__toString()));
     get_template_part( 'partials/color', 'scheme' );
 
     set_query_var( 'title', "Monochromatic Color" );
