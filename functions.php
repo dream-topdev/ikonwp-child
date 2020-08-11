@@ -49,19 +49,15 @@ add_action( 'wp_head', 'gretathemes_meta_description');
 // Function to add color title text to posts and pages
 function color_title_shortcode() {
     $colorName = 'Red';
-    $colorHex = '000000';
-    if (get_query_var("color_hex"))
-        $colorHex = get_query_var("color_hex");
+    $colorHex = getHexFromArg();
     return $colorName . ' / #' . $colorHex  . ' hex color';
 }
 add_shortcode('color-title', 'color_title_shortcode');
 
 // Function to add color hex to posts and pages
 function color_hex_shortcode() {
-    $colorHex = '000000';
-    if (get_query_var("color_hex"))
-        $colorHex = "#".get_query_var("color_hex");
-    return $colorHex;
+    $colorHex = getHexFromArg();
+    return '#'.$colorHex;
 }
 add_shortcode('color-hex', 'color_hex_shortcode');
 
@@ -209,25 +205,97 @@ function XYZtoxyY($X, $Y, $Z) {
         'y' => $Y / ( $X + $Y + $Z )
     );
 }
-// Function to add other properties of color to posts and pages
-function color_value_shortcode($atts) {
-    $colorHex = '000000';
+function LABtoLCH($L, $A, $B) {
+    $var_H = atan($B/ $A);  //Quadrant by signs
+
+    $RX = 95.047; $RY = 100.000; $RZ = 108.883;
+    if ( $var_H > 0 ) $var_H = ( $var_H / pi() ) * 180;
+    else             $var_H = 360 - ( abs( $var_H ) / pi() ) * 180;
+
+    return array(
+        'L' => $L,
+        'C' => sqrt( pow($A, 2) + pow($B, 2) ),
+        'H' => $var_H
+    );
+}
+function XYZtoLUV($X, $Y, $Z) {
+    //Reference-X, Y and Z refer to specific illuminants and observers.
+    //Common reference values are available below in this same page.
+
+    $RX = 95.047; $RY = 100.000; $RZ = 108.883;
+
+    $var_U = ( 4 * $X ) / ( $X + ( 15 * $Y ) + ( 3 * $Z ) );
+    $var_V = ( 9 * $Y ) / ( $X + ( 15 * $Y ) + ( 3 * $Z ) );
+
+    $var_Y = $Y / 100;
+    if ( $var_Y > 0.008856 ) $var_Y = pow($var_Y, ( 1/3 ));
+    else                    $var_Y = ( 7.787 * $var_Y ) + ( 16 / 116 );
+
+    $ref_U = ( 4 * $RX ) / ( $RX + ( 15 * $RY ) + ( 3 * $RZ ) );
+    $ref_V = ( 9 * $RY ) / ( $RX + ( 15 * $RY ) + ( 3 * $RZ ) );
+
+    $L = ( 116 * $var_Y ) - 16;
+    $U = 13 * $L * ( $var_U - $ref_U );
+    $V = 13 * $L * ( $var_V - $ref_V );
+    return array(
+        'L' => $L,
+        'U' => $U,
+        'V' => $V
+    );
+}
+function XYZtoHunter($X, $Y, $Z) {
+    //Reference-X, Y and Z refer to specific illuminants and observers.
+    //Common reference values are available below in this same page.
+    $RX = 95.047; $RY = 100.000; $RZ = 108.883;
+    $var_Ka = ( 175.0 / 198.04 ) * ( $RY + $RX );
+    $var_Kb = (  70.0 / 218.11 ) * ( $RY + $RZ );
+
+    $L = 100.0 * sqrt( $Y / $RY );
+    $A = $var_Ka * ( ( ( $X / $RX ) - ( $Y / $RY ) ) / sqrt( $Y / $RY ) );
+    $B = $var_Kb * ( ( ( $Y / $RY ) - ( $Z / $RZ ) ) / sqrt( $Y / $RY ) );
+    return array(
+        'L' => $L,
+        'A' => $A,
+        'B' => $B
+    );
+}
+function getHexFromArg() {
+    $colorHex = 'ff0000';
     if (get_query_var("color_hex"))
         $colorHex = get_query_var("color_hex");
-    $color = new ImagickPixel('#'.$colorHex);
-    $cInfo = $color->getColor();
-    $cnInfo = $color->getColor(true);
+    $colorHex = str_pad($colorHex, 8);
+    $colorHex = substr($colorHex, 0, 6);
+    return $colorHex;
+}
+// Function to add other properties of color to posts and pages
+function color_value_shortcode($atts) {
+    $colorHex = getHexFromArg();
+    $cInfo = array(
+        'r' => hexdec(substr($colorHex, 0, 2)),
+        'g' => hexdec(substr($colorHex, 2, 2)),
+        'b' => hexdec(substr($colorHex, 4, 2)),
+    );
+    $cnInfo = array(
+        'r' => $cInfo['r'] / 255,
+        'g' => $cInfo['g'] / 255,
+        'b' => $cInfo['b'] / 255,
+    );
     $cCMYK = RGBtoCMYK($cInfo['r'], $cInfo['g'], $cInfo['b']);
     $cHSL = RGBtoHSL($cInfo['r'], $cInfo['g'], $cInfo['b']);
     $cHSV = RGBtoHSV($cInfo['r'], $cInfo['g'], $cInfo['b']);
     $cXYZ = RGBtoXYZ($cInfo['r'], $cInfo['g'], $cInfo['b']);
     $cLAB = XYZtoLAB($cXYZ['X'], $cXYZ['Y'], $cXYZ['Z']);
     $cxyY = XYZtoxyY($cXYZ['X'], $cXYZ['Y'], $cXYZ['Z']);
+    $cLCH = LABtoLCH($cLAB['L'], $cLAB['A'], $cLAB['B']);
+    $cLUV = XYZtoLUV($cXYZ['X'], $cXYZ['Y'], $cXYZ['Z']);
+    $cHunter = XYZtoHunter($cXYZ['X'], $cXYZ['Y'], $cXYZ['Z']);
     extract( shortcode_atts( array(
         'type' => 'HEX',
         'prop' => '',
     ), $atts, 'multilink' ) );
     switch ($type) {
+        case 'DEC':
+            return hexdec($colorHex);
         case 'HEX': // RGB hex
             return $colorHex;
         break;
@@ -272,13 +340,13 @@ function color_value_shortcode($atts) {
         case 'CMYKD': // CMYK decimal
             switch($prop) {
                 case 'C':
-                    return number_format($color->getColorValue(Imagick::COLOR_CYAN), 2);
+                    return number_format($cCMYK['C'], 2);
                 case 'M':
-                    return number_format($color->getColorValue(Imagick::COLOR_MAGENTA), 2);
+                    return number_format($cCMYK['M'], 2);
                 case 'Y':
-                    return number_format($color->getColorValue(Imagick::COLOR_YELLOW), 2);
+                    return number_format($cCMYK['Y'], 2);
                 case 'K':
-                    return number_format($color->getColorValue(Imagick::COLOR_BLACK), 2);
+                    return number_format($cCMYK['K'], 2);
                 default:
                     return 0;
             }
@@ -295,6 +363,7 @@ function color_value_shortcode($atts) {
                     return 0;
             }
         break;
+        case 'HSB':
         case 'HSV': // HSV/HSB            
             switch($prop) {
                 case 'H':
@@ -308,7 +377,7 @@ function color_value_shortcode($atts) {
             }
         break;
         case 'WEB': // Web safe
-            return 'ff0000';
+            return $colorHex;
         break;
         case 'LAB': // CIE LAB                     
             switch($prop) {
@@ -349,11 +418,11 @@ function color_value_shortcode($atts) {
         case 'LCH': // CIE-LCH                     
             switch($prop) {
                 case 'L':
-                    return 53.239;
+                    return number_format($cLCH['L'], 3);
                 case 'C':
-                    return 104.549;
+                    return number_format($cLCH['C'], 3);
                 case 'H':
-                    return 39.999;
+                    return number_format($cLCH['H'], 3);
                 default:
                     return 0;
             }
@@ -361,11 +430,11 @@ function color_value_shortcode($atts) {
         case 'LUV': // CIE-LUV                     
             switch($prop) {
                 case 'L':
-                    return 53.239;
+                    return number_format($cLUV['L'], 3);
                 case 'U':
-                    return 175.009;
+                    return number_format($cLUV['U'], 3);
                 case 'V':
-                    return 37.755;
+                    return number_format($cLUV['V'], 3);
                 default:
                     return 0;
             }
@@ -373,11 +442,11 @@ function color_value_shortcode($atts) {
         case 'HUNTER': //HUNTER-LAB                  
             switch($prop) {
                 case 'L':
-                    return 46.115;
+                    return number_format($cHunter['L'],3);
                 case 'A':
-                    return 79.94;
+                    return number_format($cHunter['A'],3);
                 case 'B':
-                    return 29.795;
+                    return number_format($cHunter['B'],3);
                 default:
                     return 0;
             }
@@ -385,11 +454,11 @@ function color_value_shortcode($atts) {
         case 'BIN': //Binary                              
             switch($prop) {
                 case 'R':
-                    return '11111111';
+                    return str_pad(decbin($cInfo['r']), 8, '0', STR_PAD_LEFT);
                 case 'G':
-                    return '00000000';
+                    return str_pad(decbin($cInfo['g']), 8, '0', STR_PAD_LEFT);
                 case 'B':
-                    return '00000000';
+                    return str_pad(decbin($cInfo['b']), 8, '0', STR_PAD_LEFT);
                 default:
                     return 0;
             }
@@ -401,11 +470,23 @@ function color_value_shortcode($atts) {
 }
 add_shortcode('color-value', 'color_value_shortcode');
 
-
+function color_inverse($color){
+    $color = str_replace('#', '', $color);
+    if (strlen($color) != 6){ return '000000'; }
+    $rgb = '';
+    for ($x=0;$x<3;$x++){
+        $c = 255 - hexdec(substr($color,(2*$x),2));
+        $c = ($c < 0) ? 0 : dechex($c);
+        $rgb .= (strlen($c) < 2) ? '0'.$c : $c;
+    }
+    return '#'.$rgb;
+}
 // Function to add color schemes to posts and pages
 function color_schemes_shortcode(){
+    
+    $colorHex = getHexFromArg();
     set_query_var( 'title', "Complemetary Color" );
-    set_query_var( 'colors', array("#ff0000", "#00ffff"));
+    set_query_var( 'colors', array('#'.$colorHex, color_inverse($colorHex)));
     get_template_part( 'partials/color', 'scheme' );
 
     set_query_var( 'title', "Analogous Color" );
