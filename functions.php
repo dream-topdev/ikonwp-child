@@ -546,9 +546,11 @@ use Phim\Color\Scheme\AnalogousScheme;
 use Phim\Color\Scheme\SplitComplementaryScheme;
 use Phim\Color\Scheme\TriadicScheme;
 use Phim\Color\Scheme\TetradicScheme;
+include_once('csscolor.php');
 // Function to add color schemes to posts and pages
 function color_schemes_shortcode(){
-    include_once('csscolor.php');
+    if ($_GET["action"] === "edit" || $_GET["elementor-preview"]) // for disable preloading
+        return;
     $colorHex = getHexFromArg();
     $cInfo = array(
         'r' => hexdec(substr($colorHex, 0, 2)),
@@ -562,31 +564,58 @@ function color_schemes_shortcode(){
     $base = new CSS_Color($colorHex);
     set_query_var( 'title', "Complemetary Color" );
     set_query_var( 'colors', array('#'.$colorHex, color_inverse($colorHex)));
-    get_template_part( 'partials/color', 'scheme' );
+    get_template_part( 'my-partials/color', 'scheme' );
 
     $colors = new AnalogousScheme("#".$colorHex);
     set_query_var( 'title', "Analogous Color" );
     set_query_var( 'colors', array($colors[0]->toRgb()->__toString(), $colors[1]->toRgb()->__toString(), $colors[2]->toRgb()->__toString()));
-    get_template_part( 'partials/color', 'scheme' );
+    get_template_part( 'my-partials/color', 'scheme' );
 
     $colors = new SplitComplementaryScheme("#".$colorHex);
     set_query_var( 'title', "Split Complementary Color" );
     set_query_var( 'colors', array($colors[1]->toRgb()->__toString(), $colors[0]->toRgb()->__toString(), $colors[2]->toRgb()->__toString()));
-    get_template_part( 'partials/color', 'scheme' );
+    get_template_part( 'my-partials/color', 'scheme' );
 
     $colors = new TriadicScheme("#".$colorHex);
     set_query_var( 'title', "Triadic Color" );
     set_query_var( 'colors', array($colors[1]->toRgb()->__toString(), $colors[0]->toRgb()->__toString(), $colors[2]->toRgb()->__toString()));
-    get_template_part( 'partials/color', 'scheme' );    
+    get_template_part( 'my-partials/color', 'scheme' );    
 
     $colors = new TetradicScheme("#".$colorHex);
     set_query_var( 'title', "Tetradic Color" );
     set_query_var( 'colors', array($colors[1]->toRgb()->__toString(), $colors[0]->toRgb()->__toString(), $colors[2]->toRgb()->__toString(), $colors[3]->toRgb()->__toString()));
-    get_template_part( 'partials/color', 'scheme' );
+    get_template_part( 'my-partials/color', 'scheme' );
 
     set_query_var( 'title', "Monochromatic Color" );
     set_query_var( 'colors', array("#".$base->bg['-3'], "#".$base->bg['-2'], "#".$base->bg['-1'], "#".$base->bg['0'], "#".$base->bg['+1'], "#".$base->bg['+2'], "#".$base->bg['+3'] ));
-    get_template_part( 'partials/color', 'scheme' );
+    get_template_part( 'my-partials/color', 'scheme' );
 }
 add_shortcode('color-scheme', 'color_schemes_shortcode');
+
+
+
+add_action( 'wp_ajax_nopriv_color_image', 'color_image' );
+add_action( 'wp_ajax_color_image', 'color_image' );
+function color_image() {      
+    $im = imagecreatetruecolor(150, 200);
+    
+    $colorHex = $_GET['color'];
+    $cInfo = array(
+        'r' => hexdec(substr($colorHex, 0, 2)),
+        'g' => hexdec(substr($colorHex, 2, 2)),
+        'b' => hexdec(substr($colorHex, 4, 2)),
+    );
+    $background = imagecolorallocate($im, $cInfo['r'], $cInfo['g'], $cInfo['b']);
+    imagefill($im, 0, 0,$background);
+
+    // Set the content type header - in this case image/jpeg
+    header('Content-Type: image/jpeg');
+
+    // Output the image
+    imagepng($im);
+
+    // Free up memory
+    imagedestroy($im);
+}
+
 ?>
